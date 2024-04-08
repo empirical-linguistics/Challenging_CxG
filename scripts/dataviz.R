@@ -174,6 +174,17 @@ p + geom_text(stat="count",
               position = position_fill(vjust = .5))
 
 
+# we can also give the labels different colors
+# by exploiting the color aesthetic:
+
+p + geom_text(stat="count", 
+              aes(label = after_stat(count),
+                  color = letters), 
+              position = position_fill(vjust = .5)) +
+  scale_color_manual(values = c(rep("white", 4), rep("black", 7))) +
+  guides(color = "none")
+  
+
 
 # beeswarm and boxplots ---------------------------------------------------
 
@@ -311,5 +322,24 @@ papers %>% mutate(decision_binary = ifelse(decision %in% c("paper", "poster"), "
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   xlab("Country") + ylab("Relative Frequency") +
   scale_y_continuous(labels = percent)
+
+
+
+# Nettle (1998) data ------------------------------------------------------
+
+nettle <- read_csv("../data/language_diversity.csv")
+
+
+# pivot wider
+nettle <- nettle %>% 
+  pivot_wider(names_from = Measurement, values_from = Value)
+
+
+# plot MGS and number of languages
+ggplot(nettle, aes(x = MGS, y = Langs)) +
+  geom_point() +
+  # geom_smooth() +
+   facet_wrap(~Continent, ncol = 4)
+
 
 
