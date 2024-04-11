@@ -35,9 +35,20 @@ pr <- resid(m, type = "pearson") # residuals
 pchi2 <- sum(residuals(m, type="pearson")^2) #Pearson chi-squared
 disp <- pchi2/m$df.residual # Pearson disperson statistic
 pchi2; disp
+dispersiontest(m)
 
 # fit a negative binomial model
 m2 <- glm.nb(errors ~ year + subject + gender, data = d)
 summary(m2)
 
+# also check for zero-inflation/-truncation:
+# how many 0s does the model predict?
+preds <- predict(m2, type = "response")
+sum(dpois(x=0, lambda = preds)) %>% round
+# 0, as in our data
 
+# compare with poisson model
+preds <- predict(m, type = "response")
+sum(dpois(x=0, lambda = preds)) %>% round
+preds
+# also 0
